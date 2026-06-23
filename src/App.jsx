@@ -11,7 +11,13 @@ function App() {
   const [carrinho, setCarrinho] = useState([])
 
   function adicionarProduto(produto) {
+    const jaExiste = carrinho.find(item => item.id === produto.id)
+    if (jaExiste) return
     setCarrinho([...carrinho, produto])
+  }
+
+  function removerProduto(id) {
+    setCarrinho(carrinho.filter(item => item.id !== id))
   }
 
   const total = carrinho.reduce((soma, item) => soma + item.preco, 0)
@@ -27,7 +33,9 @@ function App() {
           nome={produto.nome}
           preco={produto.preco}
           descricao={produto.descricao}
+          noCarrinho={carrinho.some(item => item.id === produto.id)}
           onAdicionar={() => adicionarProduto(produto)}
+          onRemover={() => removerProduto(produto.id)}
         />
       ))}
     </div>
