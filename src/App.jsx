@@ -11,33 +11,53 @@ function App() {
   const [carrinho, setCarrinho] = useState([])
 
   function adicionarProduto(produto) {
-    const jaExiste = carrinho.find(item => item.id === produto.id)
-    if (jaExiste) return
-    setCarrinho([...carrinho, produto])
+  const jaExiste = carrinho.find(item => item.id === produto.id)
+  if (jaExiste) {
+    setCarrinho(carrinho.map(item =>
+      item.id === produto.id
+        ? { ...item, quantidade: item.quantidade + 1 }
+        : item
+    ))
+  } else {
+    setCarrinho([...carrinho, { ...produto, quantidade: 1 }])
   }
+}
 
   function removerProduto(id) {
+  const item = carrinho.find(item => item.id === id)
+  if (item.quantidade > 1) {
+    setCarrinho(carrinho.map(item =>
+      item.id === id
+        ? { ...item, quantidade: item.quantidade - 1 }
+        : item
+    ))
+  } else {
     setCarrinho(carrinho.filter(item => item.id !== id))
   }
+}
 
-  const total = carrinho.reduce((soma, item) => soma + item.preco, 0)
+  const totalItens = carrinho.reduce((soma, item) => soma + item.quantidade, 0)
+  const total = carrinho.reduce((soma, item) => soma + item.preco * item.quantidade, 0)
 
   return (
     <div>
       <h1>Lila Bowls</h1>
-      <p>🛒 {carrinho.length} itens — R$ {total.toFixed(2)}</p>
+      <p>🛒 {totalItens} itens — R$ {total.toFixed(2)}</p>
 
-      {produtos.map(produto => (
-        <Produto
-          key={produto.id}
-          nome={produto.nome}
-          preco={produto.preco}
-          descricao={produto.descricao}
-          noCarrinho={carrinho.some(item => item.id === produto.id)}
-          onAdicionar={() => adicionarProduto(produto)}
-          onRemover={() => removerProduto(produto.id)}
-        />
-      ))}
+      {produtos.map(produto => {
+  const noCarrinho = carrinho.find(item => item.id === produto.id)
+  return (
+    <Produto
+      key={produto.id}
+      nome={produto.nome}
+      preco={produto.preco}
+      descricao={produto.descricao}
+      quantidade={noCarrinho ? noCarrinho.quantidade : 0}
+      onAdicionar={() => adicionarProduto(produto)}
+      onRemover={() => removerProduto(produto.id)}
+    />
+  )
+})}
     </div>
   )
 }
