@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Produto from './Produto'
+import './App.css'
 
 const produtos = [
   { id: 1, nome: "Bowl Frango Grelhado", preco: 32.90, descricao: "Arroz, frango grelhado, legumes e molho especial" },
@@ -42,22 +43,23 @@ function App() {
   return (
     <div>
       <h1>Lila Bowls</h1>
-      <p>🛒 {totalItens} itens — R$ {total.toFixed(2)}</p>
-
-      {produtos.map(produto => {
-  const noCarrinho = carrinho.find(item => item.id === produto.id)
-  return (
-    <Produto
-      key={produto.id}
-      nome={produto.nome}
-      preco={produto.preco}
-      descricao={produto.descricao}
-      quantidade={noCarrinho ? noCarrinho.quantidade : 0}
-      onAdicionar={() => adicionarProduto(produto)}
-      onRemover={() => removerProduto(produto.id)}
-    />
-  )
-})}
+      <p className="carrinho-resumo">🛒 {totalItens} itens — R$ {total.toFixed(2)}</p>
+      <div className="produtos-lista">
+        {produtos.map(produto => {
+          const noCarrinho = carrinho.find(item => item.id === produto.id)
+          return (
+            <Produto
+              key={produto.id}
+              nome={produto.nome}
+              preco={produto.preco}
+              descricao={produto.descricao}
+              quantidade={noCarrinho ? noCarrinho.quantidade : 0}
+              onAdicionar={() => adicionarProduto(produto)}
+              onRemover={() => removerProduto(produto.id)}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }
